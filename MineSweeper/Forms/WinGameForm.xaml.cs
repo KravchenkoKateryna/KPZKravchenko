@@ -43,6 +43,8 @@ namespace MineSweeper.Forms
         {
             bestScoreManager.SaveBestScore(BestScoreName.Text, Time, Difficulty);
             MessageBox.Show(bestScoreManager.GetBestScores(Difficulty));
+            GameWindow.GenerateField();
+            this.Close();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

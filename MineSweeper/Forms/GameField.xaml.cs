@@ -1,4 +1,5 @@
-﻿using MineSweeper.Classes.Levels;
+﻿using MineSweeper.Classes;
+using MineSweeper.Classes.Levels;
 using MineSweeper.Forms;
 using System.Windows;
 using System.Windows.Controls;
@@ -160,6 +161,21 @@ namespace MineSweeper
             timerLbl.Content = "00:00";
             _isGameFinished = false;
             GenerateField();
+        }
+
+        private void newGameBtn_Click(object sender, RoutedEventArgs e)
+        {
+            new MainWindow().Show();
+            Close();
+        }
+
+        private void showScoresBtn_Click(object sender, RoutedEventArgs e)
+        {
+            var best = new BestScoresStatistic().GetBestScores(_difficultyLevel.Name);
+            if (string.IsNullOrEmpty(best))
+                MessageBox.Show("No best scores yet!");
+            else
+                MessageBox.Show(best);
         }
     }
 }

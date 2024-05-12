@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using MineSweeper.Classes;
 
 namespace MineSweeper.Forms
 {
@@ -11,11 +12,10 @@ namespace MineSweeper.Forms
         public Action BombClick;
         public Action CellIsOpened;
         public Action<int> BombMarked;
+        public Helpers.Coords Coords { get; set; }
 
         private bool _isFlaged = false;
 
-        public int XCoord {  get; set; }
-        public int YCoord {  get; set; }
         public bool IsPressed => !cellBtn.IsEnabled;
 
         public Cell()

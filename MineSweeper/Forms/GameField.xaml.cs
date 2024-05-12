@@ -55,8 +55,7 @@ namespace MineSweeper
                 {
                     var cell = new Cell();
                     cells[i, j] = cell;
-                    cell.XCoord = i;
-                    cell.YCoord = j;
+                    cell.Coords = new Helpers.Coords(i, j);
                     Grid.SetRow(cell, i);
                     Grid.SetColumn(cell, j);
                     bombContainerGrd.Children.Add(cell);
@@ -98,8 +97,8 @@ namespace MineSweeper
             if (!_isBombPlaced)
                 PlaceBombs(currentCell);
 
-            int x = currentCell.XCoord;
-            int y = currentCell.YCoord;
+            int x = currentCell.Coords.X;
+            int y = currentCell.Coords.Y;
 
             if (currentCell.BombsAround == 0)
                 OpenBombsAround(x, y);
@@ -133,7 +132,7 @@ namespace MineSweeper
                 for (int i = 0; i < cells.GetLength(0); i++)
                     for (int j = 0; j < cells.GetLength(1); j++)
                     {
-                        if (i == currentCell.XCoord && j == currentCell.YCoord)
+                        if (i == currentCell.Coords.X && j == currentCell.Coords.Y)
                             continue;
 
                         if (placedBombs < _totalBombs && new Random().Next(cells.Length / _totalBombs) == 1)

@@ -9,12 +9,15 @@ namespace MineSweeper
     public partial class GameField : Window
     {
         private readonly ILevel _difficultyLevel;
-        private int _totalBombs = 0;
-        private bool _isBombPlaced = false;
+
         private Cell[,] cells;
+        private int _totalBombs = 0;
         private int _openedCells = 0;
         private int _bombsMarked = 0;
+
+        private bool _isBombPlaced = false;
         private bool _isGameFinished = false;
+
         private StopWatch _stopWatch;
 
         public GameField(ILevel difficulty)

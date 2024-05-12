@@ -6,21 +6,30 @@ namespace MineSweeper.Forms
 {
     public partial class Cell : UserControl
     {
-        private int _bombsAround = 0;
-        public Action<Cell> FirstClick;
-        public Action<Cell> ZeroPressed;
+        public int BombsAround = 0;
+        public Action<Cell> LMBClick;
+        public Action BombClick;
+        public Action CellIsOpened;
+        public Action<int> BombMarked;
+
+        private bool _isFlaged = false;
+
         public int XCoord {  get; set; }
         public int YCoord {  get; set; }
+        public bool IsPressed => !cellBtn.IsEnabled;
 
         public Cell()
         {
             InitializeComponent();
         }
 
-        public bool IsBomb() => _bombsAround == -1;
+        public bool IsBomb() => BombsAround == -1;
         
-        private void DrawPressedButton()
+        public void DrawPressedButton()
         {
+            if (_isFlaged)
+                return;
+
             Dictionary<int, Color> cellColors = new Dictionary<int, Color>
             {
                 { 1, Colors.Aqua },
@@ -33,10 +42,10 @@ namespace MineSweeper.Forms
                 { 8, Colors.Orchid }
             };
 
-            cellBtn.Content = _bombsAround == 0 ? "" : (_bombsAround == -1 ? "💣" : _bombsAround.ToString());
+            cellBtn.Content = BombsAround == 0 ? "" : (BombsAround == -1 ? "💣" : BombsAround.ToString());
 
             cellBtn.Background = new SolidColorBrush(Colors.Red);
-            cellBtn.Foreground = new SolidColorBrush(cellColors.ContainsKey(_bombsAround) ? cellColors[_bombsAround] : Colors.Black);
+            cellBtn.Foreground = new SolidColorBrush(cellColors.ContainsKey(BombsAround) ? cellColors[BombsAround] : Colors.Black);
             cellBtn.IsEnabled = false;
 
             cellBtn.UpdateLayout();
@@ -44,26 +53,40 @@ namespace MineSweeper.Forms
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            FirstClick(this);
+            if (_isFlaged) return;
 
-            if (_bombsAround == 0)
-                ZeroPressed(this);
+            LMBClick(this);
 
-            DrawPressedButton();
-        }
-
-        public void Click()
-        {
-            if (_bombsAround == 0)
-                ZeroPressed(this);
-
+            if (IsBomb())
+            {
+                BombClick();
+                return;
+            }
+                
+            CellIsOpened();
             DrawPressedButton();
         }
 
         public void SetBombAround(int amount)
         {
-            _bombsAround = amount;
+            BombsAround = amount;
             UpdateLayout();
+        }
+
+        private void PutFlag(object sender, RoutedEventArgs e)
+        {
+            if (_isFlaged)
+            {
+                cellBtn.Content = "";
+                _isFlaged = false;
+                BombMarked(-1);
+            }
+            else
+            {
+                cellBtn.Content = "🚩";
+                _isFlaged = true;
+                BombMarked(1);
+            }
         }
     }
 }

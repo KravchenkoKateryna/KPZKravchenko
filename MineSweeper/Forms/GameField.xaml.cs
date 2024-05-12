@@ -15,6 +15,7 @@ namespace MineSweeper
         private int _openedCells = 0;
         private int _bombsMarked = 0;
         private bool _isGameFinished = false;
+        private StopWatch _stopWatch;
 
         public GameField(ILevel difficulty)
         {
@@ -61,9 +62,8 @@ namespace MineSweeper
                     cell.CellIsOpened = () =>
                     {
                         _openedCells++;
-                        timerLbl.Content = _openedCells;
                         if (_openedCells == _difficultyLevel.Width * _difficultyLevel.Height - _totalBombs && !_isGameFinished)
-                            new WinGameForm(_difficultyLevel.Name, 0, this).Show();
+                            new WinGameForm(_difficultyLevel.Name, _stopWatch.GetTotalSeconds(), this).Show();
                     };
                     cell.BombMarked = (int bombs) =>
                     {
@@ -73,6 +73,21 @@ namespace MineSweeper
                 }
                 minesLbl.Content = _totalBombs;
             UpdateLayout();
+
+
+        }
+
+        public void SetTimer(string time)
+        {
+            try { 
+                if (!Dispatcher.CheckAccess())
+                    Dispatcher.Invoke(() => timerLbl.Content = time);
+                else
+                    timerLbl.Content = time;
+
+                UpdateLayout();
+            }
+            catch { }
         }
 
         public void CellLMBClick(Cell currentCell)
@@ -131,6 +146,10 @@ namespace MineSweeper
                         cells[i, j].SetBombAround(GetBombsAround(i, j));
 
             UpdateLayout();
+
+            _stopWatch = new StopWatch();
+            _stopWatch.ReportTime = SetTimer;
+            _stopWatch.Start();
         }
 
         private int GetBombsAround(int x, int y)
@@ -149,6 +168,7 @@ namespace MineSweeper
 
         private void LoseGame()
         {
+            _stopWatch.Stop();
             _isGameFinished = true;
             foreach (var cell in cells)
                 cell.DrawPressedButton();

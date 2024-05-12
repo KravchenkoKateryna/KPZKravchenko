@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using MineSweeper.Classes;
+using System.Windows;
 
 namespace MineSweeper
 {
@@ -14,7 +15,9 @@ namespace MineSweeper
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            
+            this.Hide();
+            new GameField(Helpers.DifficultyLevel.Easy).Show();
+            return;
         }
     }
 }

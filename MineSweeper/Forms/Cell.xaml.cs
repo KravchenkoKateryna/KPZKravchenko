@@ -8,9 +8,9 @@ namespace MineSweeper.Forms
     {
         private int _bombsAround = 0;
         public Action<Cell> FirstClick;
-        public Action<Cell> ZeroPressed;
         public int XCoord {  get; set; }
         public int YCoord {  get; set; }
+        public bool IsPressed => !cellBtn.IsEnabled;
 
         public Cell()
         {
@@ -46,19 +46,9 @@ namespace MineSweeper.Forms
         {
             FirstClick(this);
 
-            if (_bombsAround == 0)
-                ZeroPressed(this);
-
             DrawPressedButton();
         }
 
-        public void Click()
-        {
-            if (_bombsAround == 0)
-                ZeroPressed(this);
-
-            DrawPressedButton();
-        }
 
         public void SetBombAround(int amount)
         {

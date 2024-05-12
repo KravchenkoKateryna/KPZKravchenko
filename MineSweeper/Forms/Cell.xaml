@@ -7,6 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="30" d:DesignWidth="30">
     <Grid Margin="0,0,0,0" Width="30" Height="30" Background="#FFADADAD" MaxWidth="30" MaxHeight="30">
-        <Button x:Name="cellBtn" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Width="27" Height="27" FontWeight="Bold"  Click="Button_Click" MaxWidth="27" MaxHeight="27" Background="#FFAFAFAF"/>
+        <Button x:Name="cellBtn" Content="" HorizontalAlignment="Center" VerticalAlignment="Center" Width="27" Height="27" FontWeight="Bold"  Click="Button_Click" MouseRightButtonDown="PutFlag" MaxWidth="27" MaxHeight="27" Background="#FFAFAFAF"/>
     </Grid>
 </UserControl>

@@ -8,6 +8,9 @@ namespace MineSweeper.Forms
     {
         private int _bombsAround = 0;
         public Action<Cell> FirstClick;
+        public Action BombClick;
+        private bool _isFlaged = false;
+
         public int XCoord {  get; set; }
         public int YCoord {  get; set; }
         public bool IsPressed => !cellBtn.IsEnabled;
@@ -19,8 +22,11 @@ namespace MineSweeper.Forms
 
         public bool IsBomb() => _bombsAround == -1;
         
-        private void DrawPressedButton()
+        public void DrawPressedButton()
         {
+            if (_isFlaged)
+                return;
+
             Dictionary<int, Color> cellColors = new Dictionary<int, Color>
             {
                 { 1, Colors.Aqua },
@@ -44,7 +50,12 @@ namespace MineSweeper.Forms
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            if (_isFlaged) return;
+
             FirstClick(this);
+
+            if (IsBomb())
+                BombClick();
 
             DrawPressedButton();
         }
@@ -54,6 +65,20 @@ namespace MineSweeper.Forms
         {
             _bombsAround = amount;
             UpdateLayout();
+        }
+
+        private void PutFlag(object sender, RoutedEventArgs e)
+        {
+            if (_isFlaged)
+            {
+                cellBtn.Content = "";
+                _isFlaged = false;
+            }
+            else
+            {
+                cellBtn.Content = "🚩";
+                _isFlaged = true;
+            }
         }
     }
 }

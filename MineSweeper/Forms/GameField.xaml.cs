@@ -27,6 +27,13 @@ namespace MineSweeper
 
         public void GenerateField()
         {
+            bombContainerGrd.Children.Clear();
+            bombContainerGrd.RowDefinitions.Clear();
+            bombContainerGrd.ColumnDefinitions.Clear();
+            _isBombPlaced = false;
+
+            cells = null;
+
             this.Title = _difficultyLevel.Name;
             _totalBombs = _difficultyLevel.Bombs;
             bombContainerGrd.Width = _difficultyLevel.Width * 30; // bomb size
@@ -50,6 +57,7 @@ namespace MineSweeper
                     Grid.SetColumn(cell, j);
                     bombContainerGrd.Children.Add(cell);
                     cell.FirstClick = PlaceBombs;
+                    cell.BombClick = LoseGame;
                 }
 
             UpdateLayout();
@@ -99,6 +107,17 @@ namespace MineSweeper
             return bombs;
         }
 
+        private void LoseGame()
+        {
+            foreach (var cell in cells)
+                    cell.DrawPressedButton();
 
+            MessageBox.Show("You lost!");
+        }
+
+        private void restartBtn_Click(object sender, RoutedEventArgs e)
+        {
+            GenerateField();
+        }
     }
 }

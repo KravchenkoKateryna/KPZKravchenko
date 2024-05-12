@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MineSweeper.Classes;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace MineSweeper.Forms
 {
@@ -19,9 +8,54 @@ namespace MineSweeper.Forms
     /// </summary>
     public partial class WinGameForm : Window
     {
-        public WinGameForm()
+        private string Difficulty;
+        private int Time;
+        private GameField GameWindow;
+        private BestScoresStatistic bestScoreManager;
+
+        const string _bestScoreText = "You have one of the best scores! Enter your name to save it!";
+        const string _noBestScoreText = "You win the game.";
+
+        public WinGameForm(string difficulty, int time, GameField game)
         {
             InitializeComponent();
+
+            GameWindow = game;
+            Difficulty = difficulty;
+            Time = time;
+            BestScoreName.Visibility = Visibility.Collapsed;
+
+            bestScoreManager = new BestScoresStatistic();
+            if (bestScoreManager.CheckBestScore(Difficulty, Time))
+            {
+                BestScoreName.Visibility = Visibility.Visible;
+                BestScoreName.Text = string.Empty;
+
+                winText.Content = _bestScoreText;
+            }
+            else
+            {
+                winText.Content = _noBestScoreText;
+            }
+        }
+
+        private void saveScoreBtn_Click(object sender, RoutedEventArgs e)
+        {
+            bestScoreManager.SaveBestScore(BestScoreName.Text, Time, Difficulty);
+            MessageBox.Show(bestScoreManager.GetBestScores(Difficulty));
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            GameWindow.GenerateField();
+            this.Close();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            new MainWindow().Show();
+            GameWindow.Close();
+            this.Close();
         }
     }
 }

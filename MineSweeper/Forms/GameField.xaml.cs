@@ -13,6 +13,7 @@ namespace MineSweeper
         private Cell[,] cells;
         private int _openedCells = 0;
         private int _bombsMarked = 0;
+        private bool _isGameFinished = false;
 
         public GameField(ILevel difficulty)
         {
@@ -59,8 +60,9 @@ namespace MineSweeper
                     cell.CellIsOpened = () =>
                     {
                         _openedCells++;
-                        if (_openedCells == _difficultyLevel.Width * _difficultyLevel.Height - _totalBombs)
-                            MessageBox.Show("You won!");
+                        timerLbl.Content = _openedCells;
+                        if (_openedCells == _difficultyLevel.Width * _difficultyLevel.Height - _totalBombs && !_isGameFinished)
+                            new WinGameForm(_difficultyLevel.Name, 0, this).Show();
                     };
                     cell.BombMarked = (int bombs) =>
                     {
@@ -107,7 +109,6 @@ namespace MineSweeper
         public void PlaceBombs(Cell currentCell)
         {
             _isBombPlaced = true;
-
             int placedBombs = 0;
             while (placedBombs < _totalBombs)
                 for (int i = 0; i < cells.GetLength(0); i++)
@@ -147,6 +148,7 @@ namespace MineSweeper
 
         private void LoseGame()
         {
+            _isGameFinished = true;
             foreach (var cell in cells)
                 cell.DrawPressedButton();
 
@@ -155,6 +157,8 @@ namespace MineSweeper
 
         private void restartBtn_Click(object sender, RoutedEventArgs e)
         {
+            timerLbl.Content = "00:00";
+            _isGameFinished = false;
             GenerateField();
         }
     }

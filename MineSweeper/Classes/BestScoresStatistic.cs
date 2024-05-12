@@ -44,7 +44,7 @@ namespace MineSweeper.Classes
             return sb.ToString();
         }
 
-        private bool CheckBestScore(string Difficulty, int Time)
+        public bool CheckBestScore(string Difficulty, int Time)
         {
             var bestScore = BestScores.Where(x => x.Difficulty == Difficulty);
             if (bestScore.Count() < 10)
@@ -57,7 +57,7 @@ namespace MineSweeper.Classes
             return false;
         }
 
-        private void SaveBestScore(string Name, int Time, string Difficulty)
+        public void SaveBestScore(string Name, int Time, string Difficulty)
         {
             if (CheckBestScore(Difficulty, Time))
             {
@@ -67,6 +67,11 @@ namespace MineSweeper.Classes
                     Time = Time,
                     Difficulty = Difficulty
                 });
+            }
+
+            var bestScore = BestScores.Where(x => x.Difficulty == Difficulty);
+            if (bestScore.Count() > 10)
+            {
 
                 BestScores = BestScores.OrderBy(x => x.Time).ToList();
                 for (int i = 0; i < BestScores.Count; i++)

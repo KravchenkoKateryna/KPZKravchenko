@@ -5,8 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MineSweeper.Forms"
         mc:Ignorable="d"
-        Title="WinGameForm" Height="450" Width="800">
+        Title="WinGameForm" Height="200" Width="400">
     <Grid>
-        
+        <TextBox x:Name="BestScoreName" HorizontalAlignment="Center" Margin="0,81,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="362"/>
+        <Button x:Name="saveScoreBtn" Content="Save score" HorizontalAlignment="Left" Margin="19,104,0,0" VerticalAlignment="Top" Width="101" Click="saveScoreBtn_Click"/>
+        <Button Content="Play again" HorizontalAlignment="Left" Margin="140,104,0,0" VerticalAlignment="Top" Width="100" Click="Button_Click"/>
+        <Button Content="New game" HorizontalAlignment="Left" Margin="267,104,0,0" VerticalAlignment="Top" Width="114" Click="Button_Click_1"/>
+        <Label x:Name="winText" Content="You win the game for a seconds" HorizontalAlignment="Left" Margin="19,21,0,0" VerticalAlignment="Top"/>
+
     </Grid>
 </Window>

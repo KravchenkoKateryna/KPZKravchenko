@@ -2,19 +2,17 @@
 using MineSweeper.Forms;
 using System.Windows;
 using System.Windows.Controls;
-using static MineSweeper.Classes.Helpers;
 
 namespace MineSweeper
 {
-    /// <summary>
-    /// Interaction logic for GameField.xaml
-    /// </summary>
     public partial class GameField : Window
     {
         private readonly ILevel _difficultyLevel;
         private int _totalBombs = 0;
         private bool _isBombPlaced = false;
         private Cell[,] cells;
+        private int _openedCells = 0;
+        private int _bombsMarked = 0;
 
         public GameField(ILevel difficulty)
         {
@@ -31,23 +29,22 @@ namespace MineSweeper
             bombContainerGrd.RowDefinitions.Clear();
             bombContainerGrd.ColumnDefinitions.Clear();
             _isBombPlaced = false;
-
             cells = null;
 
             this.Title = _difficultyLevel.Name;
             _totalBombs = _difficultyLevel.Bombs;
             bombContainerGrd.Width = _difficultyLevel.Width * 30; // bomb size
             bombContainerGrd.Height = _difficultyLevel.Height * 30;
-            cells = new Cell[_difficultyLevel.Width, _difficultyLevel.Height];
-
-            for (int i = 0; i < _difficultyLevel.Width; i++)
-                bombContainerGrd.RowDefinitions.Add(new RowDefinition());
+            cells = new Cell[_difficultyLevel.Height, _difficultyLevel.Width];
 
             for (int i = 0; i < _difficultyLevel.Height; i++)
-                bombContainerGrd.ColumnDefinitions.Add(new ColumnDefinition());
+                bombContainerGrd.RowDefinitions.Add(new RowDefinition());
 
             for (int i = 0; i < _difficultyLevel.Width; i++)
-                for (int j = 0; j < _difficultyLevel.Height; j++)
+                bombContainerGrd.ColumnDefinitions.Add(new ColumnDefinition());
+
+            for (int i = 0; i < _difficultyLevel.Height; i++)
+                for (int j = 0; j < _difficultyLevel.Width; j++)
                 {
                     var cell = new Cell();
                     cells[i, j] = cell;
@@ -56,18 +53,32 @@ namespace MineSweeper
                     Grid.SetRow(cell, i);
                     Grid.SetColumn(cell, j);
                     bombContainerGrd.Children.Add(cell);
-                    cell.FirstClick = PlaceBombs;
+                    cell.LMBClick = CellLMBClick;
                     cell.BombClick = LoseGame;
+                    cell.CellIsOpened = () =>
+                    {
+                        _openedCells++;
+                        if (_openedCells == _difficultyLevel.Width * _difficultyLevel.Height - _totalBombs)
+                            MessageBox.Show("You won!");
+                    };
+                    cell.BombMarked = (int bombs) =>
+                    {
+                        _bombsMarked += bombs;
+                        minesLbl.Content = _totalBombs - _bombsMarked;
+                    };
                 }
 
             UpdateLayout();
         }
 
+        public void CellLMBClick(Cell currentCell)
+        {
+            if (!_isBombPlaced)
+                PlaceBombs(currentCell);
+        }
+
         public void PlaceBombs(Cell currentCell)
         {
-            if (_isBombPlaced)
-                return;
-
             _isBombPlaced = true;
 
             int placedBombs = 0;
@@ -110,7 +121,7 @@ namespace MineSweeper
         private void LoseGame()
         {
             foreach (var cell in cells)
-                    cell.DrawPressedButton();
+                cell.DrawPressedButton();
 
             MessageBox.Show("You lost!");
         }

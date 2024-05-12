@@ -16,20 +16,20 @@ namespace MineSweeper
 
         private void EasyLevelBtn_Click(object sender, RoutedEventArgs e)
         {
-            Hide();
             new GameField(new EasyLevel()).Show();
+            Close();
         }
 
         private void MediumLevelBtn_Click(object sender, RoutedEventArgs e)
         {
-            Hide();
             new GameField(new MediumLevel()).Show();
+            Close();
         }
 
         private void HardLevelBtn_Click(object sender, RoutedEventArgs e)
         {
-            Hide();
             new GameField(new HardLevel()).Show();
+            Close();
         }
     }
 }

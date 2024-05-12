@@ -7,8 +7,11 @@ namespace MineSweeper.Forms
     public partial class Cell : UserControl
     {
         private int _bombsAround = 0;
-        public Action<Cell> FirstClick;
+        public Action<Cell> LMBClick;
         public Action BombClick;
+        public Action CellIsOpened;
+        public Action<int> BombMarked;
+
         private bool _isFlaged = false;
 
         public int XCoord {  get; set; }
@@ -52,11 +55,15 @@ namespace MineSweeper.Forms
         {
             if (_isFlaged) return;
 
-            FirstClick(this);
+            LMBClick(this);
 
             if (IsBomb())
+            {
                 BombClick();
-
+                return;
+            }
+                
+            CellIsOpened();
             DrawPressedButton();
         }
 
@@ -73,11 +80,13 @@ namespace MineSweeper.Forms
             {
                 cellBtn.Content = "";
                 _isFlaged = false;
+                BombMarked(-1);
             }
             else
             {
                 cellBtn.Content = "🚩";
                 _isFlaged = true;
+                BombMarked(1);
             }
         }
     }

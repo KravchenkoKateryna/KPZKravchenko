@@ -30,6 +30,12 @@ namespace MineSweeper.Forms
             if (_isFlaged)
                 return;
 
+            if (IsPressed)
+                return;
+
+            if (BombsAround != -1)
+                CellIsOpened();
+
             Dictionary<int, Color> cellColors = new Dictionary<int, Color>
             {
                 { 1, Colors.Aqua },
@@ -48,7 +54,7 @@ namespace MineSweeper.Forms
             cellBtn.Foreground = new SolidColorBrush(cellColors.ContainsKey(BombsAround) ? cellColors[BombsAround] : Colors.Black);
             cellBtn.IsEnabled = false;
 
-            cellBtn.UpdateLayout();
+            UpdateLayout();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -63,7 +69,6 @@ namespace MineSweeper.Forms
                 return;
             }
                 
-            CellIsOpened();
             DrawPressedButton();
         }
 

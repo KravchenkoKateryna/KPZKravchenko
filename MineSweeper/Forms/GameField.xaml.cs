@@ -158,6 +158,9 @@ namespace MineSweeper
 
         private void restartBtn_Click(object sender, RoutedEventArgs e)
         {
+            _openedCells = 0;
+            _bombsMarked = 0;
+            minesLbl.Content = _totalBombs;
             timerLbl.Content = "00:00";
             _isGameFinished = false;
             GenerateField();

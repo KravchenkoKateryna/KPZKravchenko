@@ -6,7 +6,7 @@ namespace MineSweeper.Forms
 {
     public partial class Cell : UserControl
     {
-        private int _bombsAround = 0;
+        public int BombsAround = 0;
         public Action<Cell> LMBClick;
         public Action BombClick;
         public Action CellIsOpened;
@@ -23,7 +23,7 @@ namespace MineSweeper.Forms
             InitializeComponent();
         }
 
-        public bool IsBomb() => _bombsAround == -1;
+        public bool IsBomb() => BombsAround == -1;
         
         public void DrawPressedButton()
         {
@@ -42,10 +42,10 @@ namespace MineSweeper.Forms
                 { 8, Colors.Orchid }
             };
 
-            cellBtn.Content = _bombsAround == 0 ? "" : (_bombsAround == -1 ? "💣" : _bombsAround.ToString());
+            cellBtn.Content = BombsAround == 0 ? "" : (BombsAround == -1 ? "💣" : BombsAround.ToString());
 
             cellBtn.Background = new SolidColorBrush(Colors.Red);
-            cellBtn.Foreground = new SolidColorBrush(cellColors.ContainsKey(_bombsAround) ? cellColors[_bombsAround] : Colors.Black);
+            cellBtn.Foreground = new SolidColorBrush(cellColors.ContainsKey(BombsAround) ? cellColors[BombsAround] : Colors.Black);
             cellBtn.IsEnabled = false;
 
             cellBtn.UpdateLayout();
@@ -67,10 +67,9 @@ namespace MineSweeper.Forms
             DrawPressedButton();
         }
 
-
         public void SetBombAround(int amount)
         {
-            _bombsAround = amount;
+            BombsAround = amount;
             UpdateLayout();
         }
 

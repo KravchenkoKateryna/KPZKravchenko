@@ -1,5 +1,4 @@
-﻿using MineSweeper.Classes;
-using MineSweeper.Classes.Levels;
+﻿using MineSweeper.Classes.Levels;
 using System.Windows;
 
 namespace MineSweeper

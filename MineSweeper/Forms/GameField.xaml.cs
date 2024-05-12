@@ -25,6 +25,7 @@ namespace MineSweeper
 
         public void GenerateField()
         {
+            
             bombContainerGrd.Children.Clear();
             bombContainerGrd.RowDefinitions.Clear();
             bombContainerGrd.ColumnDefinitions.Clear();
@@ -67,7 +68,7 @@ namespace MineSweeper
                         minesLbl.Content = _totalBombs - _bombsMarked;
                     };
                 }
-
+                minesLbl.Content = _totalBombs;
             UpdateLayout();
         }
 
@@ -75,6 +76,32 @@ namespace MineSweeper
         {
             if (!_isBombPlaced)
                 PlaceBombs(currentCell);
+
+            int x = currentCell.XCoord;
+            int y = currentCell.YCoord;
+
+            if (currentCell.BombsAround == 0)
+                OpenBombsAround(x, y);
+        }
+
+        private void OpenBombsAround(int x, int y)
+        {
+
+            if (x < 0 || y < 0 || x >= cells.GetLength(0) || y >= cells.GetLength(1))
+                return;
+
+            if (cells[x, y].IsPressed)
+                return;
+
+            cells[x, y].DrawPressedButton();
+
+            if (cells[x, y].BombsAround != 0)
+                return;
+
+            OpenBombsAround(x - 1, y);
+            OpenBombsAround(x + 1, y);
+            OpenBombsAround(x, y - 1);
+            OpenBombsAround(x, y + 1);
         }
 
         public void PlaceBombs(Cell currentCell)

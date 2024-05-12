@@ -1,4 +1,5 @@
 ﻿using MineSweeper.Classes;
+using MineSweeper.Classes.Levels;
 using System.Windows;
 
 namespace MineSweeper
@@ -13,11 +14,22 @@ namespace MineSweeper
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void EasyLevelBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
-            new GameField(Helpers.DifficultyLevel.Easy).Show();
-            return;
+            Hide();
+            new GameField(new EasyLevel()).Show();
+        }
+
+        private void MediumLevelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new GameField(new MediumLevel()).Show();
+        }
+
+        private void HardLevelBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            new GameField(new HardLevel()).Show();
         }
     }
 }

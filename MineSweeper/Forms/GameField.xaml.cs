@@ -11,36 +11,36 @@ namespace MineSweeper
     /// </summary>
     public partial class GameField : Window
     {
-        private readonly DifficultyLevel _difficultyLevel;
+        private readonly ILevel _difficultyLevel;
         private int _totalBombs = 0;
         private bool _isBombPlaced = false;
         private Cell[,] cells;
 
-        public GameField(DifficultyLevel difficulty)
+        public GameField(ILevel difficulty)
         {
             InitializeComponent();
 
             _difficultyLevel = difficulty;
 
-            GenerateField(new EasyLevel());
+            GenerateField();
         }
 
-        public void GenerateField(ILevel level)
+        public void GenerateField()
         {
-            this.Title = level.Name;
-            _totalBombs = level.Bombs;
-            bombContainerGrd.Width = level.Width * 30; // bomb size
-            bombContainerGrd.Height = level.Height * 30;
-            cells = new Cell[level.Width, level.Height];
+            this.Title = _difficultyLevel.Name;
+            _totalBombs = _difficultyLevel.Bombs;
+            bombContainerGrd.Width = _difficultyLevel.Width * 30; // bomb size
+            bombContainerGrd.Height = _difficultyLevel.Height * 30;
+            cells = new Cell[_difficultyLevel.Width, _difficultyLevel.Height];
 
-            for (int i = 0; i < level.Width; i++)
+            for (int i = 0; i < _difficultyLevel.Width; i++)
                 bombContainerGrd.RowDefinitions.Add(new RowDefinition());
 
-            for (int i = 0; i < level.Height; i++)
+            for (int i = 0; i < _difficultyLevel.Height; i++)
                 bombContainerGrd.ColumnDefinitions.Add(new ColumnDefinition());
 
-            for (int i = 0; i < level.Width; i++)
-                for (int j = 0; j < level.Height; j++)
+            for (int i = 0; i < _difficultyLevel.Width; i++)
+                for (int j = 0; j < _difficultyLevel.Height; j++)
                 {
                     var cell = new Cell();
                     cells[i, j] = cell;

@@ -66,7 +66,7 @@ namespace MineSweeper
             for (int i = 0; i < _difficultyLevel.Height; i++)
                 for (int j = 0; j < _difficultyLevel.Width; j++)
                 {
-                    var cell = new Cell();
+                    var cell = new Cell(_subject);
                     cells[i, j] = cell;
                     cell.Coords = new Helpers.Coords(i, j);
                     Grid.SetRow(cell, i);

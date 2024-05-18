@@ -20,10 +20,10 @@ namespace MineSweeper
         private StopWatch _stopWatch;
         private readonly Subject _subject = new Subject();
 
-        public GameField(ILevel difficulty)
+        public GameField(string difficulty)
         {
             InitializeComponent();
-            _difficultyLevel = difficulty;
+            _difficultyLevel = LevelFactory.GetLevel(difficulty);
             _subject.Attach(this);
             GenerateField();
         }

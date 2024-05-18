@@ -1,37 +1,50 @@
 ﻿using MineSweeper.Classes;
+using MineSweeper.Classes.Features.Observer;
 using MineSweeper.Classes.Levels;
+using MineSweeper.Classes.MineSweeper.Classes;
 using MineSweeper.Forms;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace MineSweeper
 {
-    public partial class GameField : Window
+    public partial class GameField : Window, IObserver
     {
         private readonly ILevel _difficultyLevel;
-
         private Cell[,] cells;
         private int _totalBombs = 0;
         private int _openedCells = 0;
         private int _bombsMarked = 0;
-
         private bool _isBombPlaced = false;
         private bool _isGameFinished = false;
-
         private StopWatch _stopWatch;
+        private readonly Subject _subject = new Subject();
 
         public GameField(ILevel difficulty)
         {
             InitializeComponent();
-
             _difficultyLevel = difficulty;
-
+            _subject.Attach(this);
             GenerateField();
+        }
+
+        public void Update()
+        {
+            // Update timer if the stopwatch is running
+            if (_stopWatch != null)
+            {
+                SetTimer(_stopWatch.GetFormattedTime());
+            }
+
+            // Update mines count
+            minesLbl.Content = _totalBombs - _bombsMarked;
+
+            // Refresh the game field layout
+            bombContainerGrd.UpdateLayout();
         }
 
         public void GenerateField()
         {
-            
             bombContainerGrd.Children.Clear();
             bombContainerGrd.RowDefinitions.Clear();
             bombContainerGrd.ColumnDefinitions.Clear();
@@ -73,15 +86,14 @@ namespace MineSweeper
                         minesLbl.Content = _totalBombs - _bombsMarked;
                     };
                 }
-                minesLbl.Content = _totalBombs;
+            minesLbl.Content = _totalBombs;
             UpdateLayout();
-
-
         }
 
         public void SetTimer(string time)
         {
-            try { 
+            try
+            {
                 if (!Dispatcher.CheckAccess())
                     Dispatcher.Invoke(() => timerLbl.Content = time);
                 else
@@ -106,7 +118,6 @@ namespace MineSweeper
 
         private void OpenBombsAround(int x, int y)
         {
-
             if (x < 0 || y < 0 || x >= cells.GetLength(0) || y >= cells.GetLength(1))
                 return;
 

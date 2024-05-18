@@ -1,62 +1,34 @@
 ﻿namespace MineSweeper.Classes
 {
-    internal class StopWatch
+    namespace MineSweeper.Classes
     {
-        private int _seconds;
-        private int _minutes;
-        private bool _isRunning;
-        private DateTime _startTime;
-        private DateTime _endTime;
-
-        public Action<string> ReportTime;
-
-        public void Start()
+        public class StopWatch
         {
-            _seconds = 0;
-            _minutes = 0;
-            
-            _startTime = DateTime.Now;
-            _isRunning = true;
-            new TaskFactory().StartNew(CountTime);
-        }
+            private DateTime _startTime;
+            private TimeSpan _elapsed;
+            public Action<string> ReportTime;
 
-        private async Task CountTime()
-        {
-            while (_isRunning)
+            public void Start()
             {
-                await Task.Delay(1000);
-                
-                var timeNow = DateTime.Now;
-                var time = timeNow - _startTime;
-                _seconds = time.Seconds;
-                _minutes = time.Minutes;
+                _startTime = DateTime.Now;
+            }
 
-                ReportTime?.Invoke(GetValue());
+            public void Stop()
+            {
+                _elapsed = DateTime.Now - _startTime;
+            }
+
+            public int GetTotalSeconds()
+            {
+                return (int)_elapsed.TotalSeconds;
+            }
+
+            public string GetFormattedTime()
+            {
+                var elapsed = DateTime.Now - _startTime;
+                return elapsed.ToString(@"mm\:ss");
             }
         }
-
-        public string GetValue()
-        {
-            return $"{_minutes:D2}:{_seconds:D2}";
-        }
-
-        public void Stop()
-        {
-            _endTime = DateTime.Now;
-            var time = _endTime - _startTime;
-            _seconds = time.Seconds;
-            _minutes = time.Minutes;
-            _isRunning = false;
-        }
-
-        public int GetTotalSeconds()
-        {
-            Stop();
-
-            var time = _endTime - _startTime;
-            var totalSeconds = time.TotalSeconds;
-
-            return (int)totalSeconds;
-        }
     }
+
 }

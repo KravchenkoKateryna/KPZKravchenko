@@ -207,7 +207,7 @@ namespace MineSweeper
 
         private void showScoresBtn_Click(object sender, RoutedEventArgs e)
         {
-            var best = new BestScoresStatistic().GetBestScores(_difficultyLevel.Name);
+            var best = BestScoresStatistic.Instance.GetBestScores(_difficultyLevel.Name);
             if (string.IsNullOrEmpty(best))
                 MessageBox.Show("No best scores yet!");
             else

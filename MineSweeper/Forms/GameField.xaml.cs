@@ -1,37 +1,50 @@
 ﻿using MineSweeper.Classes;
+using MineSweeper.Classes.Features.Observer;
 using MineSweeper.Classes.Levels;
+using MineSweeper.Classes.MineSweeper.Classes;
 using MineSweeper.Forms;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace MineSweeper
 {
-    public partial class GameField : Window
+    public partial class GameField : Window, IObserver
     {
         private readonly ILevel _difficultyLevel;
-
         private Cell[,] cells;
         private int _totalBombs = 0;
         private int _openedCells = 0;
         private int _bombsMarked = 0;
-
         private bool _isBombPlaced = false;
         private bool _isGameFinished = false;
-
         private StopWatch _stopWatch;
+        private readonly Subject _subject = new Subject();
 
-        public GameField(ILevel difficulty)
+        public GameField(string difficulty)
         {
             InitializeComponent();
-
-            _difficultyLevel = difficulty;
-
+            _difficultyLevel = LevelFactory.GetLevel(difficulty);
+            _subject.Attach(this);
             GenerateField();
+        }
+
+        public void Update()
+        {
+            // Update timer if the stopwatch is running
+            if (_stopWatch != null)
+            {
+                SetTimer(_stopWatch.GetFormattedTime());
+            }
+
+            // Update mines count
+            minesLbl.Content = _totalBombs - _bombsMarked;
+
+            // Refresh the game field layout
+            bombContainerGrd.UpdateLayout();
         }
 
         public void GenerateField()
         {
-            
             bombContainerGrd.Children.Clear();
             bombContainerGrd.RowDefinitions.Clear();
             bombContainerGrd.ColumnDefinitions.Clear();
@@ -53,7 +66,7 @@ namespace MineSweeper
             for (int i = 0; i < _difficultyLevel.Height; i++)
                 for (int j = 0; j < _difficultyLevel.Width; j++)
                 {
-                    var cell = new Cell();
+                    var cell = new Cell(_subject);
                     cells[i, j] = cell;
                     cell.Coords = new Helpers.Coords(i, j);
                     Grid.SetRow(cell, i);
@@ -73,15 +86,14 @@ namespace MineSweeper
                         minesLbl.Content = _totalBombs - _bombsMarked;
                     };
                 }
-                minesLbl.Content = _totalBombs;
+            minesLbl.Content = _totalBombs;
             UpdateLayout();
-
-
         }
 
         public void SetTimer(string time)
         {
-            try { 
+            try
+            {
                 if (!Dispatcher.CheckAccess())
                     Dispatcher.Invoke(() => timerLbl.Content = time);
                 else
@@ -106,7 +118,6 @@ namespace MineSweeper
 
         private void OpenBombsAround(int x, int y)
         {
-
             if (x < 0 || y < 0 || x >= cells.GetLength(0) || y >= cells.GetLength(1))
                 return;
 
@@ -196,7 +207,7 @@ namespace MineSweeper
 
         private void showScoresBtn_Click(object sender, RoutedEventArgs e)
         {
-            var best = new BestScoresStatistic().GetBestScores(_difficultyLevel.Name);
+            var best = BestScoresStatistic.Instance.GetBestScores(_difficultyLevel.Name);
             if (string.IsNullOrEmpty(best))
                 MessageBox.Show("No best scores yet!");
             else

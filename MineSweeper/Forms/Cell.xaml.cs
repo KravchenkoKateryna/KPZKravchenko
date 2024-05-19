@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using MineSweeper.Classes;
+using MineSweeper.Classes.Features.Observer;
 
 namespace MineSweeper.Forms
 {
@@ -17,10 +18,12 @@ namespace MineSweeper.Forms
         private bool _isFlaged = false;
 
         public bool IsPressed => !cellBtn.IsEnabled;
+        private readonly Subject _subject;
 
-        public Cell()
+        public Cell(Subject subject)
         {
             InitializeComponent();
+            _subject = subject;
         }
 
         public bool IsBomb() => BombsAround == -1;
@@ -68,8 +71,9 @@ namespace MineSweeper.Forms
                 BombClick();
                 return;
             }
-                
+
             DrawPressedButton();
+            _subject.Notify();
         }
 
         public void SetBombAround(int amount)

@@ -5,14 +5,28 @@ namespace MineSweeper.Classes
     internal class BestScoresStatistic
     {
         const string FILE_NAME = "bestScores.txt";
+        private static BestScoresStatistic _instance;
 
-        private List<BestScoreItem> BestScores { get; set; }
+        public static BestScoresStatistic Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new BestScoresStatistic();
+                }
+                return _instance;
+            }
+        }
 
-        public BestScoresStatistic()
+        // Private constructor to prevent instantiation
+        private BestScoresStatistic()
         {
             BestScores = new List<BestScoreItem>();
             LoadBestScores();
         }
+
+        private List<BestScoreItem> BestScores { get; set; }
 
         private void LoadBestScores()
         {

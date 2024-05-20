@@ -1,8 +1,11 @@
 ﻿namespace MineSweeper.Classes.Levels;
 internal class HardLevel : ILevel
 {
-    public string Name { get; } = "Hard";
-    public int Width { get; } = 30;
-    public int Height { get; } = 16;
-    public int Bombs { get; } = 99;
+    public class HardLevel : ILevel
+    {
+        public string Name => "Hard";
+        public int Width => 30;
+        public int Height => 16;
+        public int Bombs => 99;
+    }
 }

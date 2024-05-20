@@ -20,6 +20,24 @@ internal class BestScoresStatistic
 
         var lines = File.ReadAllLines(FILE_NAME);
         foreach (var line in lines)
+        const string FILE_NAME = "bestScores.txt";
+        private static BestScoresStatistic _instance;
+
+        public static BestScoresStatistic Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new BestScoresStatistic();
+                }
+                return _instance;
+            }
+        }
+
+        // Private constructor to prevent instantiation
+        private BestScoresStatistic()
+
         {
             var parts = line.Split(' ');
             BestScores.Add(new BestScoreItem
@@ -30,7 +48,6 @@ internal class BestScoresStatistic
             });
         }
 
-    }
 
     public string GetBestScores(string Difficulty)
     {

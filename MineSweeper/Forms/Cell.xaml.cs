@@ -2,18 +2,30 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using MineSweeper.Classes;
+using MineSweeper.Classes.Features.Observer;
 
 namespace MineSweeper.Forms;
 public partial class Cell : UserControl
 {
-    public int BombsAround = 0;
-    public Action<Cell> LMBClick;
-    public Action BombClick;
-    public Action CellIsOpened;
-    public Action<int> BombMarked;
-    public Helpers.Coords Coords { get; set; }
+    public partial class Cell : UserControl
+    {
+        public int BombsAround = 0;
+        public Action<Cell> LMBClick;
+        public Action BombClick;
+        public Action CellIsOpened;
+        public Action<int> BombMarked;
+        public Helpers.Coords Coords { get; set; }
 
-    private bool _isFlaged = false;
+        private bool _isFlaged = false;
+
+        public bool IsPressed => !cellBtn.IsEnabled;
+        private readonly Subject _subject;
+
+        public Cell(Subject subject)
+        {
+            InitializeComponent();
+            _subject = subject;
+        }
 
     public bool IsPressed => !cellBtn.IsEnabled;
 

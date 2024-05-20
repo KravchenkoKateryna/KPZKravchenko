@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MineSweeper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="150" Width="400">
+        Title="MainWindow" Height="150" Width="400" WindowStartupLocation="CenterScreen">
     <Grid>
         <Label Content="Select the level of new game." HorizontalAlignment="Center" Margin="0,33,0,0" VerticalAlignment="Top"/>
         <Button x:Name="EasyLevelBtn" Content="Easy" HorizontalAlignment="Left" Margin="41,67,0,0" VerticalAlignment="Top" Width="79" Click="EasyLevelBtn_Click"/>

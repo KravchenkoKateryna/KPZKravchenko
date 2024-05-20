@@ -1,4 +1,5 @@
-﻿namespace MineSweeper.Classes.Levels
+﻿namespace MineSweeper.Classes.Levels;
+internal class EasyLevel : ILevel
 {
     public class EasyLevel : ILevel
     {

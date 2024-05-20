@@ -1,24 +1,15 @@
-﻿namespace MineSweeper.Classes
+﻿namespace MineSweeper.Classes;
+public static class Helpers
 {
-    public static class Helpers
+    public struct Coords
     {
-        public enum DifficultyLevel
-        {
-            Easy,
-            Medium,
-            Hard
-        }
+        public int X;
+        public int Y;
 
-        public struct Coords
+        public Coords(int i, int j) : this()
         {
-            public int X;
-            public int Y;
-
-            public Coords(int i, int j) : this()
-            {
-                X = i;
-                Y = j;
-            }
+            X = i;
+            Y = j;
         }
     }
 }

@@ -1,9 +1,7 @@
-﻿namespace MineSweeper.Classes
+﻿namespace MineSweeper.Classes;
+internal class BestScoreItem
 {
-    internal class BestScoreItem
-    {
-        public string Name { get; set; }
-        public int Time { get; set; }
-        public string Difficulty { get; set; }
-    }
+    public required string Name { get; set; }
+    public int Time { get; set; }
+    public required string Difficulty { get; set; }
 }

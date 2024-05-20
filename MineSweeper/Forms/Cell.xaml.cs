@@ -4,7 +4,8 @@ using System.Windows.Media;
 using MineSweeper.Classes;
 using MineSweeper.Classes.Features.Observer;
 
-namespace MineSweeper.Forms
+namespace MineSweeper.Forms;
+public partial class Cell : UserControl
 {
     public partial class Cell : UserControl
     {
@@ -26,76 +27,78 @@ namespace MineSweeper.Forms
             _subject = subject;
         }
 
-        public bool IsBomb() => BombsAround == -1;
-        
-        public void DrawPressedButton()
+    public bool IsPressed => !cellBtn.IsEnabled;
+
+    public Cell()
+    {
+        InitializeComponent();
+    }
+
+    public bool IsBomb() => BombsAround == -1;
+    
+    public void DrawPressedButton()
+    {
+        if (_isFlaged || IsPressed)
+            return;
+
+        if (BombsAround != -1)
+            CellIsOpened();
+
+        Dictionary<int, Color> cellColors = new Dictionary<int, Color>
         {
-            if (_isFlaged)
-                return;
+            { 1, Colors.Aqua },
+            { 2, Colors.Green },
+            { 3, Colors.Red },
+            { 4, Colors.Blue },
+            { 5, Colors.Purple },
+            { 6, Colors.Orange },
+            { 7, Colors.Aquamarine },
+            { 8, Colors.Orchid }
+        };
 
-            if (IsPressed)
-                return;
+        cellBtn.Content = BombsAround == 0 ? "" : (BombsAround == -1 ? "💣" : BombsAround.ToString());
 
-            if (BombsAround != -1)
-                CellIsOpened();
+        cellBtn.Background = new SolidColorBrush(Colors.Red);
+        cellBtn.Foreground = new SolidColorBrush(cellColors.ContainsKey(BombsAround) ? cellColors[BombsAround] : Colors.Black);
+        cellBtn.IsEnabled = false;
 
-            Dictionary<int, Color> cellColors = new Dictionary<int, Color>
-            {
-                { 1, Colors.Aqua },
-                { 2, Colors.Green },
-                { 3, Colors.Red },
-                { 4, Colors.Blue },
-                { 5, Colors.Purple },
-                { 6, Colors.Orange },
-                { 7, Colors.Aquamarine },
-                { 8, Colors.Orchid }
-            };
+        UpdateLayout();
+    }
 
-            cellBtn.Content = BombsAround == 0 ? "" : (BombsAround == -1 ? "💣" : BombsAround.ToString());
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        if (_isFlaged) return;
 
-            cellBtn.Background = new SolidColorBrush(Colors.Red);
-            cellBtn.Foreground = new SolidColorBrush(cellColors.ContainsKey(BombsAround) ? cellColors[BombsAround] : Colors.Black);
-            cellBtn.IsEnabled = false;
+        LMBClick(this);
 
-            UpdateLayout();
+        if (IsBomb())
+        {
+            BombClick();
+            return;
         }
+            
+        DrawPressedButton();
+    }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+    public void SetBombAround(int amount)
+    {
+        BombsAround = amount;
+        UpdateLayout();
+    }
+
+    private void PutFlag(object sender, RoutedEventArgs e)
+    {
+        if (_isFlaged)
         {
-            if (_isFlaged) return;
-
-            LMBClick(this);
-
-            if (IsBomb())
-            {
-                BombClick();
-                return;
-            }
-
-            DrawPressedButton();
-            _subject.Notify();
+            cellBtn.Content = "";
+            _isFlaged = false;
+            BombMarked(-1);
         }
-
-        public void SetBombAround(int amount)
+        else
         {
-            BombsAround = amount;
-            UpdateLayout();
-        }
-
-        private void PutFlag(object sender, RoutedEventArgs e)
-        {
-            if (_isFlaged)
-            {
-                cellBtn.Content = "";
-                _isFlaged = false;
-                BombMarked(-1);
-            }
-            else
-            {
-                cellBtn.Content = "🚩";
-                _isFlaged = true;
-                BombMarked(1);
-            }
+            cellBtn.Content = "🚩";
+            _isFlaged = true;
+            BombMarked(1);
         }
     }
 }

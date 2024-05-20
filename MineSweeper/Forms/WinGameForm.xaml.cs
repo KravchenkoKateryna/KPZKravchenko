@@ -1,63 +1,58 @@
 ﻿using MineSweeper.Classes;
 using System.Windows;
 
-namespace MineSweeper.Forms
+namespace MineSweeper.Forms;
+public partial class WinGameForm : Window
 {
-    /// <summary>
-    /// Interaction logic for WinGameForm.xaml
-    /// </summary>
-    public partial class WinGameForm : Window
+    private string Difficulty;
+    private int Time;
+    private GameField GameWindow;
+    private BestScoresStatistic bestScoreManager;
+
+    const string _bestScoreText = "You have one of the best scores! Enter your name to save it!";
+    const string _noBestScoreText = "You win the game.";
+
+    public WinGameForm(string difficulty, int time, GameField game)
     {
-        private readonly string _difficultyLevel;
-        private readonly int _time;
-        private readonly GameField _gameField;
-        private GameField GameWindow;
+        InitializeComponent();
 
-        public WinGameForm(string difficultyLevel, int time, GameField gameField)
+        GameWindow = game;
+        Difficulty = difficulty;
+        Time = time;
+        BestScoreName.Visibility = Visibility.Collapsed;
+
+        bestScoreManager = new BestScoresStatistic();
+        if (bestScoreManager.CheckBestScore(Difficulty, Time))
         {
-            InitializeComponent();
-            _difficultyLevel = difficultyLevel;
-            _time = time;
-            _gameField = gameField;
+            BestScoreName.Visibility = Visibility.Visible;
+            BestScoreName.Text = string.Empty;
 
-            // Save best score if applicable
-            SaveBestScore();
+            winText.Content = _bestScoreText;
         }
-
-        private void SaveBestScore()
+        else
         {
-            // Prompt user for their name
-            var playerName = PromptForName();
-            if (!string.IsNullOrEmpty(playerName))
-            {
-                BestScoresStatistic.Instance.SaveBestScore(playerName, _time, _difficultyLevel);
-            }
+            winText.Content = _noBestScoreText;
         }
+    }
 
-        private string PromptForName()
-        {
-            // Implement a method to prompt the user for their name
-            return "Player"; // Placeholder for actual implementation
-        }
+    private void saveScoreBtn_Click(object sender, RoutedEventArgs e)
+    {
+        bestScoreManager.SaveBestScore(BestScoreName.Text, Time, Difficulty);
+        MessageBox.Show(bestScoreManager.GetBestScores(Difficulty));
+        GameWindow.GenerateField();
+        Close();
+    }
 
-        private void saveScoreBtn_Click(object sender, RoutedEventArgs e)
-        {
-            this.SaveBestScore();
-            GameWindow.GenerateField();
-            Close();
-        }
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+        GameWindow.GenerateField();
+        Close();
+    }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            GameWindow.GenerateField();
-            Close();
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            new MainWindow().Show();
-            GameWindow.Close();
-            Close();
-        }
+    private void Button_Click_1(object sender, RoutedEventArgs e)
+    {
+        new MainWindow().Show();
+        GameWindow.Close();
+        Close();
     }
 }

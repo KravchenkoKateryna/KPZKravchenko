@@ -1,14 +1,12 @@
 ﻿using MineSweeper.Classes;
 using MineSweeper.Classes.Features.Observer;
 using MineSweeper.Classes.Levels;
-using MineSweeper.Classes.MineSweeper.Classes;
 using MineSweeper.Forms;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace MineSweeper;
-public partial class GameField : Window
-{
+
     public partial class GameField : Window, IObserver
     {
         private readonly ILevel _difficultyLevel;
@@ -211,4 +209,4 @@ public partial class GameField : Window
             MessageBox.Show(best);
     }
     }
-}
+

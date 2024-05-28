@@ -5,9 +5,7 @@ using MineSweeper.Classes;
 using MineSweeper.Classes.Features.Observer;
 
 namespace MineSweeper.Forms;
-public partial class Cell : UserControl
-{
-    public partial class Cell : UserControl
+  public partial class Cell : UserControl
     {
         public int BombsAround = 0;
         public Action<Cell> LMBClick;
@@ -27,24 +25,22 @@ public partial class Cell : UserControl
             _subject = subject;
         }
 
-    public bool IsPressed => !cellBtn.IsEnabled;
+        public Cell()
+        {
+            InitializeComponent();
+        }
 
-    public Cell()
-    {
-        InitializeComponent();
-    }
+        public bool IsBomb() => BombsAround == -1;
 
-    public bool IsBomb() => BombsAround == -1;
-    
-    public void DrawPressedButton()
-    {
-        if (_isFlaged || IsPressed)
-            return;
+        public void DrawPressedButton()
+        {
+            if (_isFlaged || IsPressed)
+                return;
 
-        if (BombsAround != -1)
-            CellIsOpened();
+            if (BombsAround != -1)
+                CellIsOpened();
 
-        Dictionary<int, Color> cellColors = new Dictionary<int, Color>
+            Dictionary<int, Color> cellColors = new Dictionary<int, Color>
         {
             { 1, Colors.Aqua },
             { 2, Colors.Green },
@@ -56,49 +52,49 @@ public partial class Cell : UserControl
             { 8, Colors.Orchid }
         };
 
-        cellBtn.Content = BombsAround == 0 ? "" : (BombsAround == -1 ? "💣" : BombsAround.ToString());
+            cellBtn.Content = BombsAround == 0 ? "" : (BombsAround == -1 ? "💣" : BombsAround.ToString());
 
-        cellBtn.Background = new SolidColorBrush(Colors.Red);
-        cellBtn.Foreground = new SolidColorBrush(cellColors.ContainsKey(BombsAround) ? cellColors[BombsAround] : Colors.Black);
-        cellBtn.IsEnabled = false;
+            cellBtn.Background = new SolidColorBrush(Colors.Red);
+            cellBtn.Foreground = new SolidColorBrush(cellColors.ContainsKey(BombsAround) ? cellColors[BombsAround] : Colors.Black);
+            cellBtn.IsEnabled = false;
 
-        UpdateLayout();
-    }
-
-    private void Button_Click(object sender, RoutedEventArgs e)
-    {
-        if (_isFlaged) return;
-
-        LMBClick(this);
-
-        if (IsBomb())
-        {
-            BombClick();
-            return;
+            UpdateLayout();
         }
-            
-        DrawPressedButton();
-    }
 
-    public void SetBombAround(int amount)
-    {
-        BombsAround = amount;
-        UpdateLayout();
-    }
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (_isFlaged) return;
 
-    private void PutFlag(object sender, RoutedEventArgs e)
-    {
-        if (_isFlaged)
-        {
-            cellBtn.Content = "";
-            _isFlaged = false;
-            BombMarked(-1);
+            LMBClick(this);
+
+            if (IsBomb())
+            {
+                BombClick();
+                return;
+            }
+
+            DrawPressedButton();
         }
-        else
+
+        public void SetBombAround(int amount)
         {
-            cellBtn.Content = "🚩";
-            _isFlaged = true;
-            BombMarked(1);
+            BombsAround = amount;
+            UpdateLayout();
+        }
+
+        private void PutFlag(object sender, RoutedEventArgs e)
+        {
+            if (_isFlaged)
+            {
+                cellBtn.Content = "";
+                _isFlaged = false;
+                BombMarked(-1);
+            }
+            else
+            {
+                cellBtn.Content = "🚩";
+                _isFlaged = true;
+                BombMarked(1);
+            }
         }
     }
-}

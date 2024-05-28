@@ -48,6 +48,12 @@ internal class StopWatch
         _isRunning = false;
     }
 
+    public string GetFormattedTime()
+    {
+        var elapsed = DateTime.Now - _startTime;
+        return elapsed.ToString(@"mm\:ss");
+    }
+
     public int GetTotalSeconds()
     {
         Stop();

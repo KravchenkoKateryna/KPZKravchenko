@@ -11,19 +11,19 @@ public partial class MainWindow : Window
 
     private void EasyLevelBtn_Click(object sender, RoutedEventArgs e)
     {
-        new GameField(new EasyLevel()).Show();
+        new GameField("Easy").Show();
         Close();
     }
 
     private void MediumLevelBtn_Click(object sender, RoutedEventArgs e)
     {
-        new GameField(new MediumLevel()).Show();
+        new GameField("Easy").Show();
         Close();
     }
 
     private void HardLevelBtn_Click(object sender, RoutedEventArgs e)
     {
-        new GameField(new HardLevel()).Show();
+        new GameField("Hard").Show();
         Close();
     }
 }

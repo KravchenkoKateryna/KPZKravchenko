@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MineSweeper.Classes.Levels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -40,67 +41,86 @@ namespace MineSweeper.Classes
             foreach (var line in lines)
             {
                 var parts = line.Split(' ');
-                if (parts.Length == 3)
+                if (parts.Length == 6)
                 {
+                    ILevel level;
+                    switch (parts[2])
+                    {
+                        case "Easy":
+                            level = new EasyLevel();
+                            break;
+                        case "Medium":
+                            level = new MediumLevel();
+                            break;
+                        case "Hard":
+                            level = new HardLevel();
+                            break;
+                        default:
+                            level = new CustomLevel(parts[2], int.Parse(parts[3]), int.Parse(parts[4]), int.Parse(parts[5]));
+                            break;
+                    }
+
                     BestScores.Add(new BestScoreItem
                     {
                         Name = parts[0],
                         Time = int.Parse(parts[1]),
-                        Difficulty = parts[2]
+                        Level = level
                     });
                 }
             }
         }
 
-        public string GetBestScores(string difficulty)
+
+        public void SaveBestScore(string name, int time, ILevel level)
+        {
+            if (CheckBestScore(level, time))
+            {
+                BestScores.Add(new BestScoreItem
+                {
+                    Name = name,
+                    Time = time,
+                    Level = level
+                });
+
+                var bestScoresForLevel = BestScores
+                    .Where(x => x.Level.Name.Equals(level.Name, StringComparison.OrdinalIgnoreCase))
+                    .OrderBy(x => x.Time)
+                    .ToList();
+
+                if (bestScoresForLevel.Count > 10)
+                {
+                    BestScores = bestScoresForLevel.Take(10).ToList();
+                }
+
+                File.WriteAllText(FILE_NAME, string.Join(Environment.NewLine, BestScores.Select(x => $"{x.Name} {x.Time} {x.Level.Name} {x.Level.Width} {x.Level.Height} {x.Level.Bombs}")));
+            }
+        }
+
+        public bool CheckBestScore(ILevel level, int time)
+        {
+            var bestScoresForLevel = BestScores
+                .Where(x => x.Level.Name.Equals(level.Name, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(x => x.Time)
+                .ToList();
+
+            return bestScoresForLevel.Count < 10 || bestScoresForLevel.Any(x => x.Time > time);
+        }
+
+        public string GetBestScores(ILevel level)
         {
             var filteredScores = BestScores
-                .Where(x => x.Difficulty.Equals(difficulty, StringComparison.OrdinalIgnoreCase))
+                .Where(x => x.Level.Name.Equals(level.Name, StringComparison.OrdinalIgnoreCase))
                 .OrderBy(x => x.Time)
                 .ToList();
 
             var sb = new StringBuilder();
             foreach (var score in filteredScores)
             {
-                sb.AppendLine($"{score.Name} {score.Time} {score.Difficulty}");
+                sb.AppendLine($"{score.Name} {score.Time} {score.Level.Name} {score.Level.Width} {score.Level.Height} {score.Level.Bombs}");
             }
 
             return sb.ToString();
         }
 
-        public bool CheckBestScore(string difficulty, int time)
-        {
-            var bestScoresForDifficulty = BestScores
-                .Where(x => x.Difficulty.Equals(difficulty, StringComparison.OrdinalIgnoreCase))
-                .OrderBy(x => x.Time)
-                .ToList();
-
-            return bestScoresForDifficulty.Count < 10 || bestScoresForDifficulty.Any(x => x.Time > time);
-        }
-
-        public void SaveBestScore(string name, int time, string difficulty)
-        {
-            if (CheckBestScore(difficulty, time))
-            {
-                BestScores.Add(new BestScoreItem
-                {
-                    Name = name,
-                    Time = time,
-                    Difficulty = difficulty
-                });
-
-                var bestScoresForDifficulty = BestScores
-                    .Where(x => x.Difficulty.Equals(difficulty, StringComparison.OrdinalIgnoreCase))
-                    .OrderBy(x => x.Time)
-                    .ToList();
-
-                if (bestScoresForDifficulty.Count > 10)
-                {
-                    BestScores = bestScoresForDifficulty.Take(10).ToList();
-                }
-
-                File.WriteAllText(FILE_NAME, string.Join(Environment.NewLine, BestScores.Select(x => $"{x.Name} {x.Time} {x.Difficulty}")));
-            }
-        }
     }
 }

@@ -77,7 +77,7 @@ public partial class GameField : Window, IObserver
                 {
                     _openedCells++;
                     if (_openedCells == _difficultyLevel.Width * _difficultyLevel.Height - _totalBombs && !_isGameFinished)
-                        new WinGameForm(_difficultyLevel.Name, _stopWatch.GetTotalSeconds(), this).Show();
+                        new WinGameForm(_difficultyLevel, _stopWatch.GetTotalSeconds(), this).Show();
                 };
                 cell.BombMarked = (int bombs) =>
                 {
@@ -202,7 +202,7 @@ public partial class GameField : Window, IObserver
 
     private void showScoresBtn_Click(object sender, RoutedEventArgs e)
     {
-        var best = BestScoresStatistic.Instance.GetBestScores(_difficultyLevel.Name);
+        var best = BestScoresStatistic.Instance.GetBestScores(_difficultyLevel);
         if (string.IsNullOrEmpty(best))
             MessageBox.Show("No best scores yet!");
         else

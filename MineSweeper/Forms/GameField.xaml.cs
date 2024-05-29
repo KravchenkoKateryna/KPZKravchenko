@@ -7,96 +7,96 @@ using System.Windows.Controls;
 
 namespace MineSweeper;
 
-    public partial class GameField : Window, IObserver
+public partial class GameField : Window, IObserver
+{
+    private readonly ILevel _difficultyLevel;
+    private Cell[,] cells;
+    private int _totalBombs = 0;
+    private int _openedCells = 0;
+    private int _bombsMarked = 0;
+    private bool _isBombPlaced = false;
+    private bool _isGameFinished = false;
+    private StopWatch _stopWatch;
+    private readonly Subject _subject = new Subject();
+
+    public GameField(string difficulty, int width = 0, int height = 0, int bombs = 0)
     {
-        private readonly ILevel _difficultyLevel;
-        private Cell[,] cells;
-        private int _totalBombs = 0;
-        private int _openedCells = 0;
-        private int _bombsMarked = 0;
-        private bool _isBombPlaced = false;
-        private bool _isGameFinished = false;
-        private StopWatch _stopWatch;
-        private readonly Subject _subject = new Subject();
+        InitializeComponent();
+        _difficultyLevel = LevelFactory.GetLevel(difficulty, width, height, bombs);
+        _subject.Attach(this);
+        GenerateField();
+    }
 
-        public GameField(string difficulty)
+    public void Update()
+    {
+        // Update timer if the stopwatch is running
+        if (_stopWatch != null)
         {
-            InitializeComponent();
-            _difficultyLevel = LevelFactory.GetLevel(difficulty);
-            _subject.Attach(this);
-            GenerateField();
+            SetTimer(_stopWatch.GetFormattedTime());
         }
 
-        public void Update()
-        {
-            // Update timer if the stopwatch is running
-            if (_stopWatch != null)
+        // Update mines count
+        minesLbl.Content = _totalBombs - _bombsMarked;
+
+        // Refresh the game field layout
+        bombContainerGrd.UpdateLayout();
+    }
+
+    public void GenerateField()
+    {
+        bombContainerGrd.Children.Clear();
+        bombContainerGrd.RowDefinitions.Clear();
+        bombContainerGrd.ColumnDefinitions.Clear();
+        _isBombPlaced = false;
+        cells = null;
+
+        this.Title = _difficultyLevel.Name;
+        _totalBombs = _difficultyLevel.Bombs;
+        bombContainerGrd.Width = _difficultyLevel.Width * 30; // bomb size
+        bombContainerGrd.Height = _difficultyLevel.Height * 30;
+        cells = new Cell[_difficultyLevel.Height, _difficultyLevel.Width];
+
+        for (int i = 0; i < _difficultyLevel.Height; i++)
+            bombContainerGrd.RowDefinitions.Add(new RowDefinition());
+
+        for (int i = 0; i < _difficultyLevel.Width; i++)
+            bombContainerGrd.ColumnDefinitions.Add(new ColumnDefinition());
+
+        for (int i = 0; i < _difficultyLevel.Height; i++)
+            for (int j = 0; j < _difficultyLevel.Width; j++)
             {
-                SetTimer(_stopWatch.GetFormattedTime());
-            }
-
-            // Update mines count
-            minesLbl.Content = _totalBombs - _bombsMarked;
-
-            // Refresh the game field layout
-            bombContainerGrd.UpdateLayout();
-        }
-
-        public void GenerateField()
-        {
-            bombContainerGrd.Children.Clear();
-            bombContainerGrd.RowDefinitions.Clear();
-            bombContainerGrd.ColumnDefinitions.Clear();
-            _isBombPlaced = false;
-            cells = null;
-
-            this.Title = _difficultyLevel.Name;
-            _totalBombs = _difficultyLevel.Bombs;
-            bombContainerGrd.Width = _difficultyLevel.Width * 30; // bomb size
-            bombContainerGrd.Height = _difficultyLevel.Height * 30;
-            cells = new Cell[_difficultyLevel.Height, _difficultyLevel.Width];
-
-            for (int i = 0; i < _difficultyLevel.Height; i++)
-                bombContainerGrd.RowDefinitions.Add(new RowDefinition());
-
-            for (int i = 0; i < _difficultyLevel.Width; i++)
-                bombContainerGrd.ColumnDefinitions.Add(new ColumnDefinition());
-
-            for (int i = 0; i < _difficultyLevel.Height; i++)
-                for (int j = 0; j < _difficultyLevel.Width; j++)
+                var cell = new Cell(_subject);
+                cells[i, j] = cell;
+                cell.Coords = new Helpers.Coords(i, j);
+                Grid.SetRow(cell, i);
+                Grid.SetColumn(cell, j);
+                bombContainerGrd.Children.Add(cell);
+                cell.LMBClick = CellLMBClick;
+                cell.BombClick = LoseGame;
+                cell.CellIsOpened = () =>
                 {
-                    var cell = new Cell(_subject);
-                    cells[i, j] = cell;
-                    cell.Coords = new Helpers.Coords(i, j);
-                    Grid.SetRow(cell, i);
-                    Grid.SetColumn(cell, j);
-                    bombContainerGrd.Children.Add(cell);
-                    cell.LMBClick = CellLMBClick;
-                    cell.BombClick = LoseGame;
-                    cell.CellIsOpened = () =>
-                    {
-                        _openedCells++;
-                        if (_openedCells == _difficultyLevel.Width * _difficultyLevel.Height - _totalBombs && !_isGameFinished)
-                            new WinGameForm(_difficultyLevel.Name, _stopWatch.GetTotalSeconds(), this).Show();
-                    };
-                    cell.BombMarked = (int bombs) =>
-                    {
-                        _bombsMarked += bombs;
-                        minesLbl.Content = _totalBombs - _bombsMarked;
-                    };
-                }
-            minesLbl.Content = _totalBombs;
-            UpdateLayout();
-        }
+                    _openedCells++;
+                    if (_openedCells == _difficultyLevel.Width * _difficultyLevel.Height - _totalBombs && !_isGameFinished)
+                        new WinGameForm(_difficultyLevel.Name, _stopWatch.GetTotalSeconds(), this).Show();
+                };
+                cell.BombMarked = (int bombs) =>
+                {
+                    _bombsMarked += bombs;
+                    minesLbl.Content = _totalBombs - _bombsMarked;
+                };
+            }
+        minesLbl.Content = _totalBombs;
+        UpdateLayout();
+    }
 
-        public void SetTimer(string time)
+    public void SetTimer(string time)
+    {
+        try
         {
-            try
-            {
-                if (!Dispatcher.CheckAccess())
-                    Dispatcher.Invoke(() => timerLbl.Content = time);
-                else
-                    timerLbl.Content = time;
+            if (!Dispatcher.CheckAccess())
+                Dispatcher.Invoke(() => timerLbl.Content = time);
+            else
+                timerLbl.Content = time;
 
             UpdateLayout();
         }
@@ -208,5 +208,5 @@ namespace MineSweeper;
         else
             MessageBox.Show(best);
     }
-    }
+}
 

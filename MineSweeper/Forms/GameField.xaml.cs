@@ -128,6 +128,10 @@ public partial class GameField : Window, IObserver
         OpenBombsAround(x + 1, y);
         OpenBombsAround(x, y - 1);
         OpenBombsAround(x, y + 1);
+        OpenBombsAround(x + 1, y + 1);
+        OpenBombsAround(x + 1, y - 1);
+        OpenBombsAround(x - 1, y + 1);
+        OpenBombsAround(x - 1, y - 1);
     }
 
     public void PlaceBombs(Cell currentCell)

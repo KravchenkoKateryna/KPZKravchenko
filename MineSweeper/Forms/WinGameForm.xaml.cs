@@ -1,10 +1,11 @@
 ﻿using MineSweeper.Classes;
+using MineSweeper.Classes.Levels;
 using System.Windows;
 
 namespace MineSweeper.Forms;
 public partial class WinGameForm : Window
 {
-    private string Difficulty;
+    private  ILevel DifficultyLevel;
     private int Time;
     private GameField GameWindow;
     private BestScoresStatistic bestScoreManager;
@@ -12,17 +13,17 @@ public partial class WinGameForm : Window
     const string _bestScoreText = "You have one of the best scores! Enter your name to save it!";
     const string _noBestScoreText = "You win the game.";
 
-    public WinGameForm(string difficulty, int time, GameField game)
+    public WinGameForm(ILevel difficulty, int time, GameField game)
     {
         InitializeComponent();
 
         GameWindow = game;
-        Difficulty = difficulty;
+        DifficultyLevel = difficulty;
         Time = time;
         BestScoreName.Visibility = Visibility.Collapsed;
 
         bestScoreManager = new BestScoresStatistic();
-        if (bestScoreManager.CheckBestScore(Difficulty, Time))
+        if (bestScoreManager.CheckBestScore(DifficultyLevel, Time))
         {
             BestScoreName.Visibility = Visibility.Visible;
             BestScoreName.Text = string.Empty;
@@ -37,8 +38,8 @@ public partial class WinGameForm : Window
 
     private void saveScoreBtn_Click(object sender, RoutedEventArgs e)
     {
-        bestScoreManager.SaveBestScore(BestScoreName.Text, Time, Difficulty);
-        MessageBox.Show(bestScoreManager.GetBestScores(Difficulty));
+        bestScoreManager.SaveBestScore(BestScoreName.Text, Time, DifficultyLevel);
+        MessageBox.Show(bestScoreManager.GetBestScores(DifficultyLevel));
         GameWindow.GenerateField();
         Close();
     }

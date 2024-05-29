@@ -5,12 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MineSweeper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="150" Width="400" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Label Content="Select the level of new game." HorizontalAlignment="Center" Margin="0,33,0,0" VerticalAlignment="Top"/>
+        Title="MainWindow" Height="231" Width="398" WindowStartupLocation="CenterScreen">
+    <Grid Margin="0,0,0,-9">
+        <Label Content="Select the level of new game." HorizontalAlignment="Center" Margin="0,19,0,0" VerticalAlignment="Top"/>
         <Button x:Name="EasyLevelBtn" Content="Easy" HorizontalAlignment="Left" Margin="41,67,0,0" VerticalAlignment="Top" Width="79" Click="EasyLevelBtn_Click"/>
-        <Button x:Name="MediumLevelBtn" Content="Medium" HorizontalAlignment="Center" VerticalAlignment="Top" Width="80" Margin="0,67,0,0" Click="MediumLevelBtn_Click"/>
+        <Button x:Name="MediumLevelBtn" Content="Medium" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="164,67,0,0" Click="MediumLevelBtn_Click"/>
         <Button x:Name="HardLevelBtn" Content="Hard" HorizontalAlignment="Left" Margin="281,67,0,0" VerticalAlignment="Top" Width="79" Click="HardLevelBtn_Click"/>
+        <Label Content="Width" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="25,125,0,0" />
+        <Label Content="Height" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="126,125,0,0" />
+        <Label Content="Mines" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="243,125,0,0" />
 
+        <TextBox x:Name="FieldWidthTbx" HorizontalAlignment="Left" Height="20" Margin="72,128,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="42" PreviewTextInput="NumberValidationTextBox" AutomationProperties.HelpText="Width"/>
+        <TextBox x:Name="FieldHeightTbx" HorizontalAlignment="Left" Height="20" Margin="173,128,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="49" PreviewTextInput="NumberValidationTextBox" AutomationProperties.HelpText="Height"/>
+        <TextBox x:Name="FieldMinesTbx" HorizontalAlignment="Left" Height="20" Margin="290,128,0,0" TextWrapping="Wrap" Text="5" VerticalAlignment="Top" Width="76" PreviewTextInput="NumberValidationTextBox" AutomationProperties.HelpText="Mines"/>
+        <Button x:Name="CustonLevelBtn" Content="Custom" HorizontalAlignment="Left" VerticalAlignment="Top" Width="80" Margin="164,164,0,0" Click="CustomLevelBtn_Click"/>
+        <Label Content="OR" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,96,0,0" FontWeight="Bold" />
     </Grid>
 </Window>
